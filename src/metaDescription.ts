@@ -14,6 +14,16 @@ import type {
 import type { ESimpleDataType } from "./data";
 import type { EFormatTypes } from "./formatting";
 
+export type TDeepPartial<T extends TNullable<object>> = {
+  [P in keyof T]?: T[P] extends object
+    ? T[P] extends Array<infer U>
+      ? U extends object
+        ? Array<TDeepPartial<U>>
+        : T[P]
+      : TDeepPartial<T[P]>
+    : T[P];
+};
+
 export interface ILens<T extends TNullable<object>, Value> {
   get(obj: T): TNullable<Value>;
   set(obj: T, value: Value): void;
